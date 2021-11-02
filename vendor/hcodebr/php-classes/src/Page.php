@@ -9,6 +9,8 @@
     private $tpl;
     private $options = [];
     private $defaults = [
+      "header"=>true,
+      "footer"=>true,
       "data"=>[]
 
     ];
@@ -29,7 +31,7 @@
 
       $this->setData($this->options["data"]);
 
-      $this->tpl->draw("header"); // draw vai desenhar o template na tela espera o nome do arquivo que vai chamar.
+      if ($this->options["header"] === true) $this->tpl->draw("header"); // draw vai desenhar o template na tela espera o nome do arquivo que vai chamar o if determina se vai ou não carregar o header.
 
     }
 
@@ -51,7 +53,7 @@
 
     public function __destruct(){
 
-      $this->tpl->draw("footer");
+      if ($this->options["footer"] === true) $this->tpl->draw("footer"); // se vai ou não carregar o footer
 
     }
 
