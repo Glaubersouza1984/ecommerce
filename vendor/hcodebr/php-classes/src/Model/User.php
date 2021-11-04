@@ -5,7 +5,7 @@ namespace Hcode\Model;
 use \Hcode\DB\Sql;
 use \Hcode\Model;
 
-class User extends Model {
+class User extends Model { // Classe model sabe fazer os geters e seters
 
   Const SESSION = "User";
 
@@ -25,7 +25,7 @@ class User extends Model {
 
     $data = $results[0];
 
-    if (password_verify($password, $data["despassword"]) === true) //está função retorna verdadeiro ou falso
+    if (password_verify($password, $data["despassword"]) === true) //está função retorna verdadeiro ou falso par senha.
     {
 
       $user = new User();
@@ -55,7 +55,7 @@ class User extends Model {
       (bool)$_SESSION[user::SESSION]["inadmin"] !== $inadmin
     ){
 
-      header("Location: /admin/login");
+      header("Location: /admin/login/");
       exit;
 
     }

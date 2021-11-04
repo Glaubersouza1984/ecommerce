@@ -9,8 +9,8 @@
     public function __call($name, $args) // Método Mágico recebe nome e argumentos. Args é o valor do atributo
     {
 
-      $method = substr($name, 0,3); // a partir da posição 0 traga 1 e traga 2 
-      $fieldName = substr($name, 3, strlen($name)); // strlen conta todos vai a partir da terceira posição até o final.
+      $method = substr($name, 0, 3); // a partir da posição 0 traga 1 e traga 2 
+      $fieldName = substr($name, 3, strlen($name)); // strlen conta todos e vai a partir da terceira posição até o final.
     
       switch ($method)
       {

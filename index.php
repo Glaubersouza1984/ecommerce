@@ -42,9 +42,9 @@ $app->get('/admin/login/', function(){
 
 $app->post('/admin/login/', function(){
 
-	User::login($_POST["Login"], $POST["Password"]);
+	User::login($_POST["login"], $POST["password"]);
 
-	header("Location: /admin/"); //se não estourar uma exceção vou redirecinar para o header admin
+	header("Location: /admin"); //se não estourar uma exceção vou redirecinar para o header admin
 	exit;
 	
 });
