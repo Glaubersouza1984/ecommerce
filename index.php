@@ -19,7 +19,7 @@ $app->get('/', function() { //é uma rota o \ onde ela está
 	
 });
 
-$app->get('/admin/', function() {
+$app->get('/admin', function() {
 
 	User::verifyLogin();
 
@@ -29,7 +29,7 @@ $app->get('/admin/', function() {
 	
 });
 
-$app->get('/admin/login/', function(){
+$app->get('/admin/login', function(){
 
 	$page = new PageAdmin([
 		"header"=>false, //Estamos desabilitando o header e o footer padrão que foi colocado no vendor
@@ -40,20 +40,20 @@ $app->get('/admin/login/', function(){
 
 });
 
-$app->post('/admin/login/', function(){
+$app->post('/admin/login', function() {
 
-	User::login($_POST["login"], $POST["password"]);
+	User::login($_POST["login"], $_POST["password"]);
 
-	header("Location: /admin"); //se não estourar uma exceção vou redirecinar para o header admin
+	header("Location: /admin");
 	exit;
-	
+
 });
 
-$app->get('/admin/logout/', function(){
+$app->get('/admin/logout', function(){
 
 	User::logout();
 
-	header("Location: /admin/login/");
+	header("Location: /admin/login");
 	exit;
 
 });

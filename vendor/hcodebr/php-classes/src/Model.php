@@ -6,7 +6,27 @@
 
     private $values = [];
 
-    public function __call($name, $args) // Método Mágico recebe nome e argumentos. Args é o valor do atributo
+    public function __call($name, $args)
+    {
+ 
+        $method = substr($name, 0, 3);
+        $fieldName = substr($name, 3, strlen($name));
+ 
+        switch ($method)
+        {
+            case "get":
+                return $this->values[$fieldName];
+                break;
+ 
+            case "set":
+                $this->values[$fieldName] = $args[0];
+                break;
+        }
+ 
+    }
+    
+
+    /*public function __call($name, $args) // Método Mágico recebe nome e argumentos. Args é o valor do atributo
     {
 
       $method = substr($name, 0, 3); // a partir da posição 0 traga 1 e traga 2 
@@ -25,7 +45,7 @@
         
       }
 
-    }
+    }*/
 
     public function setData($data = array())
     {

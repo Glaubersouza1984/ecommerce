@@ -6,15 +6,36 @@ RewriteEngine On
 #
 # RewriteBase /
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^ index.php [QSA,L]
-
 RewriteEngine On
 RewriteBase /
  
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA,L]
+
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html
+
+#Habilita o Mod-Rewrite
+RewriteEngine On
  
-Options Indexes FollowSymLinks Includes ExecCGI
-AllowOverride All
-Require all granted
+#define o diretório que será afetado, e no qual o arquivo .htaccess se encontra
+RewriteBase  /
+ 
+Rewritecond %{REQUEST_URI} !-f
+Rewritecond %{REQUEST_URI} !-d
+Rewritecond %{REQUEST_URI} !-l
+#basta alterar o trecho "$1.php [L]" para mudar o tipo de arquivo a ser afetado. Ex.: "$1.html [L]"
+RewriteRule ^([\w\d-]+)$ $1.php [L]
+
+Options -Multiviews -Indexes +FollowSymLinks
+RewriteEngine On
+RewriteBase /
+DirectorySlash Off
+
+# remove trailing slash
+RewriteRule ^(.*)\/(\?.*)?$ $1$2 [R=301,L]
+
+# rewrite /dir/file?query to /dir/file.php?query
+RewriteRule ^([\w\/-]+)(\?.*)?$ $1.php$2 [L,T=application/x-httpd-php]
