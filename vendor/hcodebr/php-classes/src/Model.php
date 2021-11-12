@@ -6,11 +6,11 @@
 
     private $values = [];
 
-    public function __call($name, $args)
+    public function __call($name, $args) // args é o valor que foi passado do atributo.
     {
  
-        $method = substr($name, 0, 3);
-        $fieldName = substr($name, 3, strlen($name));
+        $method = substr($name, 0, 3); // qual os três primeiros digitos do nome do método que foi chamado.
+        $fieldName = substr($name, 3, strlen($name)); //qual o nome do campo que foi chamado
  
         switch ($method)
         {

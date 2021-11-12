@@ -17,7 +17,7 @@
 
     public function __construct($opts = array(), $tpl_dir = "/views/"){
 
-      $this->options = array_merge($this->defaults, $opts); //vai mesclar os dois arrays e guardar dentor de options 
+      $this->options = array_merge($this->defaults, $opts); //vai mesclar os dois arrays e guardar dentro de options 
 
       $config = array(
         "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$tpl_dir,//variável de ambient $_SERVER vai buscar a pasta no dir raiz
@@ -25,7 +25,7 @@
         "debug"         => false
       );
     
-      Tpl::configure( $config );
+      Tpl::configure( $config ); // atributo da nossa classe
 
       $this->tpl = new Tpl; //para ter acesso configurar como atributo da própria classe.
 

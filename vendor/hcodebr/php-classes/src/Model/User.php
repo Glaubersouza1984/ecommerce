@@ -1,6 +1,6 @@
 <?php
 
-namespace Hcode\Model;
+namespace Hcode\Model; // onde a classe está é o namespace dela
 
 use \Hcode\DB\Sql;
 use \Hcode\Model;
@@ -15,12 +15,12 @@ class User extends Model { // Classe model sabe fazer os geters e seters
     $sql = new Sql();
 
     $results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array( //Evitar SQL Injection :LOGIN
-      ":LOGIN"=>$login //fazer o bind dos nosso parametros
+      ":LOGIN"=>$login //fazer o bind dos nosso parametros vai ser a variável login do nosso parâmetro
     ));
 
     if (count($results) === 0) //se não retornou nenhum resultado estourar uma exceção.
     {
-      throw new \Exception("Usuário inexistente ou senha inválida."); // colocar contra barra localizar exceções no diretório php principal.      
+      throw new \Exception("Usuário inexistente ou senha inválida."); // colocar contra barra localizar exceções no diretório php principal pois não está dentro de Model.      
     }
 
     $data = $results[0];
@@ -28,7 +28,7 @@ class User extends Model { // Classe model sabe fazer os geters e seters
     if (password_verify($password, $data["despassword"]) === true) //está função retorna verdadeiro ou falso par senha.
     {
 
-      $user = new User();
+      $user = new User(); // se verdadeiro vamos criar um objeto deste usuário.
 
       $user->setData($data);
 
@@ -66,8 +66,80 @@ class User extends Model { // Classe model sabe fazer os geters e seters
   {
 
     $_SESSION[User::SESSION] = NULL;
+    
   }
 
+  public static function listAll()
+  {
+
+    $sql = new Sql();
+
+    return $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) ORDER BY b.desperson");
+
+  }
+
+  public function save()
+  {
+
+    $sql = new Sql();
+
+    $results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)",
+     array(
+      ":desperson"=>$this->getdesperson(),
+      ":deslogin"=>$this->getdeslogin(),
+      ":despassword"=>$this->getdespassword(),
+      ":desemail"=>$this->getdesemail(),
+      ":nrphone"=>$this->getnrphone(),
+      ":inadmin"=>$this->getinadmin()
+    ));
+
+    $this->setData($results[0]);
+
+  }
+
+  public function get($iduser)
+  {
+
+    $sql = new Sql();
+
+    $results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) WHERE a.iduser = :iduser", array(
+      ":iduser"=>$iduser
+    ));
+
+    $this->setData($results[0]);
+
+  }
+
+  public function update()
+  {
+
+    $sql = new Sql();
+
+    $results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)",
+     array(
+      ":iduser"=>$this->getiduser(), 
+      ":desperson"=>$this->getdesperson(),
+      ":deslogin"=>$this->getdeslogin(),
+      ":despassword"=>$this->getdespassword(),
+      ":desemail"=>$this->getdesemail(),
+      ":nrphone"=>$this->getnrphone(),
+      ":inadmin"=>$this->getinadmin()
+    ));
+
+    $this->setData($results[0]);
+
+  }
+
+  public function delete()
+  {
+
+    $sql = new Sql();
+
+    $sql->query("CALL sp_users_delete(:iduser)", array(
+      ":iduser"=>$this->getiduser()
+    ));
+  }
+  
 }
 
 ?>
