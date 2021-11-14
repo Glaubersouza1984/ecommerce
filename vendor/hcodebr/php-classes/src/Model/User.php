@@ -25,7 +25,7 @@ class User extends Model { // Classe model sabe fazer os geters e seters
 
     $data = $results[0];
 
-    if (password_verify($password, $data["despassword"]) === true) //está função retorna verdadeiro ou falso par senha.
+    if (password_verify($password, $data["despassword"]) === true) //está função retorna verdadeiro ou falso para senha.
     {
 
       $user = new User(); // se verdadeiro vamos criar um objeto deste usuário.
@@ -78,22 +78,22 @@ class User extends Model { // Classe model sabe fazer os geters e seters
 
   }
 
-  public function save()
+  public function save() // Este método não pode ser estático pois vai ter acesso as informações que estão nos atributos.
   {
 
     $sql = new Sql();
 
     $results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)",
      array(
-      ":desperson"=>$this->getdesperson(),
-      ":deslogin"=>$this->getdeslogin(),
+      ":desperson"=>$this->getdesperson(), // todos estes get foram gerados pelo setdata.
+      ":deslogin"=>$this->getdeslogin(), //":deslogin"=>this isso é o bind para associar a chave e valor.
       ":despassword"=>$this->getdespassword(),
       ":desemail"=>$this->getdesemail(),
       ":nrphone"=>$this->getnrphone(),
       ":inadmin"=>$this->getinadmin()
     ));
 
-    $this->setData($results[0]);
+    $this->setData($results[0]); // resposta na posição 0 do array.
 
   }
 
@@ -106,7 +106,7 @@ class User extends Model { // Classe model sabe fazer os geters e seters
       ":iduser"=>$iduser
     ));
 
-    $this->setData($results[0]);
+    $this->setData($results[0]); // resposta posição 0 do array.
 
   }
 
