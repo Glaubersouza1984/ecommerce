@@ -6,6 +6,7 @@ use \Slim\Slim; //namespace dentro do vendor tenho dezenas de classes qual eu qu
 use \Hcode\Page;
 use \Hcode\PageAdmin;
 use \Hcode\Model\User;
+use \Hcode\Model\Category;
 
 $app = new Slim(); // por conta das rotas criando uma nova aplicação do slim 
 
@@ -160,18 +161,18 @@ $app->get("/admin/forgot", function(){ // Rota para a tela esqueci a senha digit
 
 });
 
-$app->post("/admin/forgot", function(){
+$app->post("/admin/forgot", function(){ // Enviar via POST o e-mail
 
-	$user = User::getForgot($_POST["email"]);
+	$user = User::getForgot($_POST["email"]); // Método para Enviar E-mail
 
-	header("Location: /admin/forgot/sent");
+	header("Location: /admin/forgot/sent"); //Redirect
 	exit;
 
 });
 
-$app->get("/admin/forgot/sent", function(){
+$app->get("/admin/forgot/sent", function(){ // Abrir a Rota do Redirect acima.
 
-	$page = new PageAdmin([
+	$page = new PageAdmin([ //Renderizar o template do Send
 		"header"=>false,
 		"footer"=>false
 	]);
@@ -180,9 +181,9 @@ $app->get("/admin/forgot/sent", function(){
 
 });
 
-$app->get("/admin/forgot/reset", function(){
+$app->get("/admin/forgot/reset", function(){ //Rota para a Tela de Redefinir a Senha
 
-	$user = User::validForgotDecrypt($_GET["code"]);
+	$user = User::validForgotDecrypt($_GET["code"]); //Validar 
 
 	$page = new PageAdmin([
 		"header"=>false,
@@ -196,23 +197,23 @@ $app->get("/admin/forgot/reset", function(){
 
 });
 
-$app->post("/admin/forgot/reset", function(){
+$app->post("/admin/forgot/reset", function(){ // Enviar para a mesma rota mas com método POST
 
 	$forgot = User::validForgotDecrypt($_POST["code"]);
 
-	User::setForgotUserd($forgot["idrecovery"]);
+	User::setForgotUserd($forgot["idrecovery"]); //Método para salvar no banco de dados data da alteração da senha.
 
 	$user = new User();
 
 	$user->get((int)$forgot["iduser"]);
 
-	$password = password_hash($_POST["password"], PASSWORD_DEFAULT, [
+	$password = password_hash($_POST["password"], PASSWORD_DEFAULT, [ //Criptografar a senha para salvar no BD
 		"cost"=>12
 	]);
 
-	$user->setPassword($password);
+	$user->setPassword($password); //Salvar a Senha no Banco de Dados.
 
-	$page = new PageAdmin([
+	$page = new PageAdmin([ //Setar template senha alterada com Sucesso.
 		"header"=>false,
 		"footer"=>false
 	]);
@@ -220,6 +221,94 @@ $app->post("/admin/forgot/reset", function(){
 	$page->setTpl("forgot-reset-success");
 
 });
+
+$app->get("/admin/categories", function(){
+
+	User::verifyLogin();
+
+	$categories = Category::listAll();
+
+	$page = new PageAdmin();
+
+	$page->setTpl("categories", [
+		'categories'=>$categories	// Passar variável para o template através de um array.
+	]);
+
+});
+
+$app->get("/admin/categories/create", function(){
+
+	User::verifyLogin();
+
+	$page = new PageAdmin();
+
+	$page->setTpl("categories-create");
+
+});
+
+$app->post("/admin/categories/create", function(){
+
+	User::verifyLogin();
+
+	$category = new Category(); // Nova instância da classe category
+
+	$category->setData($_POST); // category vamos setar a variável Post vai pegar os mesmos names da variável deste array global post e vai colocar no nosso objeto.
+
+	$category->save(); // salvar no BD.
+
+	header('Location: /admin/categories'); //depois de salvo redirecionar para tela categorias.
+	exit;
+
+});
+
+
+$app->get("/admin/categories/:idcategory/delete", function($idcategory){
+
+	$category = new Category; //Criando um objeto da classe
+
+	$category->get((int)$idcategory);
+
+	$category->delete();
+
+	header('Location: /admin/categories'); //depois de salvo redirecionar para tela categorias.
+	exit;
+
+});
+
+
+$app->get("/admin/categories/:idcategory", function($idcategory){
+
+	User::verifyLogin();
+
+	$category = new Category();
+
+	$category->get((int)$idcategory); //Fazer um cast para converter para numérico.
+	
+	$page = new PageAdmin();
+
+	$page->setTpl("categories-update", [
+		'category'=>$category->getValues() //Converter em um array.
+	]);
+
+});
+
+$app->post("/admin/categories/:idcategory", function($idcategory){
+
+	User::verifyLogin();
+
+	$category = new Category();
+
+	$category->get((int)$idcategory); //Fazer um cast para converter para numérico.
+	
+	$category->setData($_POST);
+
+	$category->save();
+
+	header('Location: /admin/categories');
+	exit;
+
+});
+
 
 $app->run(); // pronto tudo carregado, vamos rodar.
 

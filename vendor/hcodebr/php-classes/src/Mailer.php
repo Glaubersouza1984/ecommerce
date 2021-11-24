@@ -17,9 +17,10 @@ class Mailer {
 
   public function __construct($toAddress, $toName, $subject, $tplName, $data = array())
   {
-    
+    //Template
+
     $config = array(
-      "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"]."/views/email/", // veio da classe Page
+      "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"]."/views/email/", 
       "cache_dir"     => $_SERVER["DOCUMENT_ROOT"]."/views-cache/",
       "debug"         => false
     );
@@ -29,10 +30,10 @@ class Mailer {
     $tpl = new Tpl; //para ter acesso configurar como atributo da própria classe.
 
     foreach ($data as $key => $value) {
-      $tpl->assign($key, $value);
+      $tpl->assign($key, $value); //Criar as variáveis dentro do Template
     }
 
-    $html = $tpl->draw($tplName, true);
+    $html = $tpl->draw($tplName, true); //True para jogar dentro da variável.
 
    $this->mail = new \PHPMailer;
  
@@ -65,30 +66,30 @@ class Mailer {
     $this->mail->SMTPAuth = true;
 
     // Nome de usuário a ser usado para autenticação SMTP - use endereço de e-mail completo para gmail
-    $this->mail->Username = Mailer::USERNAME;
+    $this->mail->Username = Mailer::USERNAME; // Constante
 
     // Senha a ser usada para autenticação SMTP
-    $this->mail->Password = Mailer::PASSWORD;
+    $this->mail->Password = Mailer::PASSWORD; // Constante
 
     // Defina de quem a mensagem deve ser enviada
     // Observe que com o gmail você só pode usar o endereço da sua conta (o mesmo que `Nome de usuário`)
     // ou aliases predefinidos que você configurou em sua conta.
     // Não use endereços enviados por usuários aqui
-    $this->mail->setFrom (Mailer::USERNAME, Mailer::NAME_FROM);
+    $this->mail->setFrom (Mailer::USERNAME, Mailer::NAME_FROM); // Constante
 
     // Defina um endereço de resposta alternativo
     // Este é um bom lugar para colocar endereços enviados por usuários
     //$this->mail->addReplyTo ('replyto@example.com ',' Primeiro Último ');
 
     // Defina para quem a mensagem deve ser enviada
-    $this->mail->addAddress ($toAddress, $toName);
+    $this->mail->addAddress ($toAddress, $toName); // Está vindo na variável do método construtor
 
     // Defina a linha de assunto
-    $this->mail->Subject = $subject;
+    $this->mail->Subject = $subject; // Está vindo na variável do método construtor.
 
     // Leia o corpo de uma mensagem HTML de um arquivo externo, converta imagens referenciadas em incorporadas,
     // converter HTML em um corpo alternativo de texto simples básico
-    $this->mail->msgHTML ($html);
+    $this->mail->msgHTML ($html); // Variável HTML que vamos renderizar com RainTPL
 
     // Substitua o corpo do texto simples por um criado manualmente
     $this->mail->AltBody = 'Este é um corpo de mensagem de texto simples';
