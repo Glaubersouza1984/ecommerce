@@ -45,13 +45,13 @@ class Category extends Model { // Classe model sabe fazer os geters e seters
 
   }
 
-  public function delete()
+  public function delete() // Não recebe parâmetro nenhum pois se espera que o objeto já está carregado.
   {
 
     $sql = new Sql();
 
     $sql->query("DELETE FROM tb_categories WHERE idcategory = :idcategory",[
-      'idcategory'=>$this->getidcategory()
+      'idcategory'=>$this->getidcategory() // pegar do próprio objeto palavra reservada this.
     ]);
 
   }
