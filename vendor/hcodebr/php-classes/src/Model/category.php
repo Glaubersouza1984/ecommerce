@@ -68,10 +68,10 @@ class Category extends Model { // Classe model sabe fazer os geters e seters
 
     foreach ($categories as $row)
     {
-        array_push($html, '<li><a href="/categories/'.$row['idcategory'].'">'.$row['descategory'].'</a></li>');
+        array_push($html, '<li><a href="/categories/'.$row['idcategory'].'">'.$row['descategory'].'</a></li>'); // adicionar um item no array após ele ser criado.
     }
 
-    file_put_contents($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "categories-menu.html", implode('', $html));
+    file_put_contents($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "categories-menu.html", implode('', $html)); // Função para salvar as alterações no documento categories-menu, implode converte o array em string.
   }
    
 }
