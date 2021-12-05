@@ -65,31 +65,31 @@ class Product extends Model { // Classe model sabe fazer os geters e seters
   public function checkPhoto()
   {
 
-    if (file_exists( 
+    if (file_exists( // Se o arquivo existir.
       $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . //aqui é caminho de pasta do SO.
       "res" . DIRECTORY_SEPARATOR .
       "site" . DIRECTORY_SEPARATOR .
       "img" . DIRECTORY_SEPARATOR .
       "products" . DIRECTORY_SEPARATOR .
-      $this->getidproduct() . ".jpg"
+      $this->getidproduct() . ".jpg" // Foto vai ser o id do nosso produto
       )) {
 
-        $url = "/res/site/img/products/" . $this->getidproduct() . ".jpg"; // aqui é url.
+        $url = "/res/site/img/products/" . $this->getidproduct() . ".jpg"; // aqui é url por isso utilizou barra vai carregar se a foto existir.
 
       } else {
 
-        $url = "/res/site/img/product.jpg";
+        $url = "/res/site/img/product.jpg"; // Retornar uma foto padrão se a foto não existir.
 
       }
 
-      return $this->setdesphoto($url);
+      return $this->setdesphoto($url); // Retornar a variável $url e setar dentro do objeto.
 
   }
 
-  public function getValues()
+  public function getValues() // Não quero chamar toda hora o método Photo somente quando chamar dentro de Products por isso reescrevemos o método.
   {
 
-    $this->checkPhoto();
+    $this->checkPhoto(); // Criar um método para ver se tem ou não foto faltando, se tiver vai carregar uma foto padrão.
 
     $values = parent::getValues();
 
@@ -97,17 +97,17 @@ class Product extends Model { // Classe model sabe fazer os geters e seters
 
   }
 
-  public function setPhoto($file)
+  public function setPhoto($file) // Método para salvar foto.
   {
 
     $extension = explode('.', $file['name']); // encontrou o ponto fez um array a partir dele. 
-    $extension = end($extension);
+    $extension = end($extension); // A extenção é somente a última posição que ele achou deste array.
     
     switch ($extension) {
 
       case "jpg":
       case "jpeg":
-        $image = imagecreatefromjpeg($file["tmp_name"]);
+        $image = imagecreatefromjpeg($file["tmp_name"]); // Função do GD para criar a imagem com biblioteca GD, tmp_name nome arquivo temporário que vem do servidor.
       break;
 
       case "gif":
@@ -127,11 +127,11 @@ class Product extends Model { // Classe model sabe fazer os geters e seters
     "products" . DIRECTORY_SEPARATOR .
     $this->getidproduct() . ".jpg";
 
-    imagejpeg($image, $dist);
+    imagejpeg($image, $dist); // Vou salvar image neste destino.
 
-    imagedestroy($image);
+    imagedestroy($image); // destruir a imagem 
 
-    $this->checkPhoto();
+    $this->checkPhoto(); // Para o dado ficar carregado chamar o $this->checkPhoto
 
   }
     

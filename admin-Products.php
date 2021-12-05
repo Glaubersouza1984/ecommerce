@@ -8,17 +8,17 @@ $app->get("/admin/products", function(){
 
   User::verifyLogin();
 
-  $products = Product::listAll();
+  $products = Product::listAll(); // método estático.
 
   $Page = new PageAdmin();
 
-  $Page->setTpl("products", [
+  $Page->setTpl("products", [ // Aqui é a nossa lista de produtos a variável produtos vai receber nossa lista.
     "products"=>$products
   ]);
 
 });
 
-$app->get("/admin/products/create", function(){
+$app->get("/admin/products/create", function(){ // Rota para o html que é o form para criar produtos.
 
   User::verifyLogin();
 
@@ -51,7 +51,7 @@ $app->get("/admin/products/:idproduct", function($idproduct){ // HTML para traze
 
 	$product->get((int)$idproduct); //Fazer um cast para converter para numérico vem em html em texto.
 	
-	$page = new PageAdmin(); // Tela para carregar as categorias.
+	$page = new PageAdmin(); // Tela para carregar os produtos.
 
 	$page->setTpl("products-update", [
 		'product'=>$product->getValues() //Converter em um array.
@@ -59,7 +59,7 @@ $app->get("/admin/products/:idproduct", function($idproduct){ // HTML para traze
 
 });
 
-$app->post("/admin/products/:idproduct", function($idproduct){ // HTML para trazer na tela.
+$app->post("/admin/products/:idproduct", function($idproduct){ // HTML para trazer na tela criar rota upload foto.
 
 	User::verifyLogin();
 
@@ -67,18 +67,18 @@ $app->post("/admin/products/:idproduct", function($idproduct){ // HTML para traz
 
 	$product->get((int)$idproduct); //Fazer um cast para converter para numérico vem em html em texto.
 	
-  $product->setData($_POST);
+  $product->setData($_POST); // As informações que vem via Post.
 
   $product->save(); 
   
-  $product->setPhoto($_FILES["file"]);
+  $product->setPhoto($_FILES["file"]); // Método Classe produto para salvar foto.
 
   header('Location: /admin/products');
   exit;
 
 });
 
-$app->get("/admin/products/:idproduct/delete", function($idproduct){
+$app->get("/admin/products/:idproduct/delete", function($idproduct){ // Rota para Deletar produto.
 
 	$product = new Product; //Criando um objeto da classe
 
