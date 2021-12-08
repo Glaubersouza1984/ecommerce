@@ -3,6 +3,7 @@
 use \Hcode\PageAdmin;
 use \Hcode\Model\User;
 use \Hcode\Model\Category;
+use \Hcode\Model\Product;
 
 $app->get("/admin/categories", function(){ // Rota para acessar a página html das categorias 
 
@@ -91,18 +92,62 @@ $app->post("/admin/categories/:idcategory", function($idcategory){ // Aqui para 
 
 });
 
-$app->get("/categories/:idcategory", function($idcategory){
+$app->get("/admin/categories/:idcategory/products", function($idcategory){
+
+	User::verifyLogin();
 
 	$category = new Category(); // objeto da classe.
 
 	$category->get((int)$idcategory); // Recuperar o id que foi passado na função com get, fazer o cast para converter para número vem string através da url.
-	$page = new Page();
+	$page = new PageAdmin();
 
-	$page->setTpl("category", [ // Passar os dados desta categoria dado category com variável e getValues para pegar os valores.
+	$page->setTpl("categories-products", [ 
 		'category'=>$category->getValues(),
-		'products'=>[] //array vazio por enquanto aqui vai ser colocado os produtos vindo do Banco de Dados.
+		'productsRelated'=>$category->getProducts(),
+		'productsNotRelated'=>$category->getProducts(false)
 	]);
+	
+});
+
+	
+	$app->get("/admin/categories/:idcategory/products/:idproduct/add", function($idcategory, $idproduct){
+
+		User::verifyLogin();
+	
+		$category = new Category(); // objeto da classe.
+	
+		$category->get((int)$idcategory); 
+
+		$product = new Product();
+
+		$product->get((int)$idproduct); 
+
+		$category->addProduct($product);
+
+		header("Location: /admin/categories/".$idcategory."/products");
+		exit;
 
 });
+
+
+$app->get("/admin/categories/:idcategory/products/:idproduct/remove", function($idcategory, $idproduct){
+
+	User::verifyLogin();
+
+	$category = new Category(); // objeto da classe.
+
+	$category->get((int)$idcategory); 
+
+	$product = new Product();
+
+	$product->get((int)$idproduct); 
+
+	$category->removeProduct($product);
+
+	header("Location: /admin/categories/".$idcategory."/products");
+	exit;
+
+});
+
 
 ?>
