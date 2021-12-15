@@ -74,7 +74,7 @@ class Category extends Model { // Classe model sabe fazer os geters e seters
     file_put_contents($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "categories-menu.html", implode('', $html)); // Função para salvar as alterações no documento categories-menu, implode converte o array em string.
   }
 
-  public function getProducts($related = true)
+  public function getProducts($related = true) // método para pegar produtos relacionados e não conforme categoria.
   {
 
     $sql = new Sql();
@@ -88,7 +88,7 @@ class Category extends Model { // Classe model sabe fazer os geters e seters
           WHERE b.idcategory = :idcategory
           );
       ", [
-        ':idcategory'=>$this->getidcategory()
+        ':idcategory'=>$this->getidcategory() //Passar o id que está no próprio objeto instânciado.
       ]);
 
     } else {
@@ -107,14 +107,42 @@ class Category extends Model { // Classe model sabe fazer os geters e seters
 
   }
 
-  public function addProduct(Product $product)
+  public function getProductsPage($page = 1, $itemsPerPage = 8)
+  {
+
+    $start = ($page -1) * $itemsPerPage;
+
+    $sql = new Sql();
+
+    $results = $sql->select("SELECT SQL_CALC_FOUND_ROWS *
+      FROM tb_products a
+      INNER JOIN tb_productscategories b on a.idproduct = b.idproduct
+      INNER JOIN tb_categories c ON c.idcategory = b.idcategory
+      WHERE c.idcategory = :idcategory
+      LIMIT $start, $itemsPerPage; 
+    ",[
+      'idcategory'=>$this->getidcategory()
+    ]);
+
+    $resultTotal = $sql->select("SELECT FOUND_ROWS() AS nrtotal");
+
+    return [
+      'data'=>Product::checkList($results),
+      'total'=>(int)$resultTotal[0]["nrtotal"],
+      'pages'=>ceil($resultTotal[0]["nrtotal"] / $itemsPerPage) //Função do PHP que converte arredondando para cima.
+    ];
+
+  }
+
+
+  public function addProduct(Product $product) // forçar a passagem do parâmetro dizendo que ele é do tipo produto.
   {
 
     $sql = new Sql();
 
     $sql->query("INSERT INTO tb_productscategories (idcategory, idproduct) VALUES(:idcategory, :idproduct)", [
       ':idcategory'=>$this->getidcategory(),
-      ':idproduct'=>$product->getidproduct()
+      ':idproduct'=>$product->getidproduct() // aqui vai ser o objeto product que passamos no parâmetro.
     ]);
 
   }

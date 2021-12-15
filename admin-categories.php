@@ -103,7 +103,7 @@ $app->get("/admin/categories/:idcategory/products", function($idcategory){
 
 	$page->setTpl("categories-products", [ 
 		'category'=>$category->getValues(),
-		'productsRelated'=>$category->getProducts(),
+		'productsRelated'=>$category->getProducts(), // variáveis dentro do template
 		'productsNotRelated'=>$category->getProducts(false)
 	]);
 	
@@ -122,9 +122,9 @@ $app->get("/admin/categories/:idcategory/products", function($idcategory){
 
 		$product->get((int)$idproduct); 
 
-		$category->addProduct($product);
+		$category->addProduct($product); // Este método vai receber uma classe instânciada produto.
 
-		header("Location: /admin/categories/".$idcategory."/products");
+		header("Location: /admin/categories/".$idcategory."/products"); // vai passar a variável que foi passada no parâmetro da função.
 		exit;
 
 });
@@ -142,7 +142,7 @@ $app->get("/admin/categories/:idcategory/products/:idproduct/remove", function($
 
 	$product->get((int)$idproduct); 
 
-	$category->removeProduct($product);
+	$category->removeProduct($product); // Método para remover produto da categoria.
 
 	header("Location: /admin/categories/".$idcategory."/products");
 	exit;
